@@ -1,0 +1,5 @@
+{
+  "delay": 2500,
+  "verbose": true,
+  "ignore": ["logs/*", "test/*", "docs/*", "*.test.js", "token.json"]
+}
