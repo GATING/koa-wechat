@@ -70,8 +70,10 @@
     initRoutes(app)
     app.listen(port, async () => {
       const { getWechat } = require('./wechat')
-      const res = await getWechat().handle('createMenu', require('./wechat/menu'))
-      console.log('创建菜单成功', res)
+      getWechat()
+      // 木有创建菜单的权限
+      // const res = await getWechat().handle('createMenu', require('./wechat/menu'))
+      // console.log('创建菜单成功', res)
       console.log(`listen successd`)
       console.log(`服务器运行于 http://localhost:${port}`)
     })

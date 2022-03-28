@@ -27,20 +27,14 @@ const request = axios.create({
 const errorHandler = error => {
   const status = error?.response?.status
   error.message = errorStatus[status] || '未知错误'
+  console.log(error)
   log.o(error?.response)
   return Promise.reject(error)
 }
 
 // 请求拦截器
 request.interceptors.request.use(
-  config => {
-    if (config.method === 'get') {
-      config.paramsSerializer = function (params) {
-        return qs.stringify(params, { arrayFormat: 'repeat' })
-      }
-    }
-    return config
-  },
+  config => config,
   error => errorHandler(error)
 )
 

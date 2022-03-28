@@ -1,4 +1,6 @@
+const { replyJd, replyVip, vipHelp, replyHelp } = require('./bot')
 const help = '亲爱的，欢迎关注磨蹭的小时光'
+const urlReg = /(((ht|f)tps?):\/\/)?[\w-]+(\.[\w-]+)+([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])?/
 
 // 自定义菜单
 // https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141013
@@ -24,6 +26,19 @@ const replyEvent = () => {
       'text',
       async message => {
         let content = message.Content
+        if (/^\/?help$/.test(content)) {
+          return replyHelp(content)
+        } else if (/^\/?vip$/.test(content)) {
+          return vipHelp(content)
+        } else if (urlReg.test(content)) {
+          //判断链接是否来自于京东
+          if (content.includes('jd') || content.includes('jingxi')) {
+            return await replyJd(content)
+          } else {
+            return replyVip(content)
+          }
+        }
+
         return 'Oh, 暂时无法理解 ' + content + ' 这句话'
       }
     ],
