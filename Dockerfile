@@ -7,7 +7,7 @@ MAINTAINER gating
 RUN mkdir -p /home/koa-wechat
 
 # 将koa-wechat目录拷贝到镜像里
-ADD ./koa-wechat /home/koa-wechat
+ADD . /home/koa-wechat
 
 # 指定工作目录
 WORKDIR /home/koa-wechat
