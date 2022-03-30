@@ -1,8 +1,7 @@
-const fs = require('fs')
-const FormData = require('form-data')
-const concatStream = require('concat-stream')
-const { resolve } = require('path')
-const { get, post } = require('../utils/request')
+// const fs = require('fs')
+// const FormData = require('form-data')
+// const concatStream = require('concat-stream')
+const { get } = require('../utils/request')
 const { getWechat } = require('./index')
 const USER_AGENT = require('./userAgent')
 const { jdUrl, jdClientID, jdClientSecret } = process.env

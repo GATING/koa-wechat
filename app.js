@@ -69,7 +69,7 @@
     // 初始化路由
     initRoutes(app)
     app.listen(port, async () => {
-      const { getWechat } = require('./wechat')
+      // const { getWechat } = require('./wechat')
       // 木有创建菜单的权限
       // const res = await getWechat.handle('createMenu', require('./wechat/menu'))
       // console.log('创建菜单成功', res)
