@@ -1,4 +1,9 @@
-const { get } = require('../utils/request')
+const fs = require('fs')
+const FormData = require('form-data')
+const concatStream = require('concat-stream')
+const { resolve } = require('path')
+const { get, post } = require('../utils/request')
+const { getWechat } = require('./index')
 const USER_AGENT = require('./userAgent')
 const { jdUrl, jdClientID, jdClientSecret } = process.env
 
@@ -16,7 +21,7 @@ async function getCookie() {
 
   return evnResult.data[0].value
 }
-module.exports.replyJd = async function (content) {
+exports.replyJd = async function (content) {
   const Cookie = await getCookie()
   //判断链接是否来自于京东
   let linkInfo = await get(
@@ -60,12 +65,13 @@ module.exports.replyJd = async function (content) {
   ]
 }
 
-module.exports.replyHelp = function () {
+exports.replyHelp = function () {
   return (
     '目前支持的功能有：\n' +
     '\n直接输入京东的商品链接，可以直接转链\n' +
     '\n直接输入视频链接可以跳转到解析链接播放会员视频\n' +
-    '\n输入 /vip 可以切换源播放视频\n'
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=vip&msgmenuid=1asdsad">/vip</a> 可以切换源播放视频\n' +
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=help&msgmenuid=1asdsad">/help</a> 可以再次回到这里哦\n'
   )
 }
 
@@ -96,7 +102,7 @@ const parseInterfaces = [
   { name: '4K', url: 'https://jx.4kdv.com/?url=' }
 ]
 
-module.exports.vipHelp = function () {
+exports.vipHelp = function () {
   return (
     '欢迎使用视频解析功能，目前可用的源有：\n' +
     parseInterfaces.map((interface, index) => `${index + 1}.${interface.name}`).join('\n') +
@@ -104,8 +110,48 @@ module.exports.vipHelp = function () {
     '如: vip1 https://www.mgtv.com/b/291976/3283295.html?fpa=se&lastp=so_result'
   )
 }
-module.exports.replyVip = function (content) {
+exports.replyVip = function (content) {
   const index = ~~content.match(/vip(\d+)/)?.[1]
   const { name, url } = parseInterfaces[index ? index - 1 : 0]
   return `目前播放源是:${name},请复制到浏览器播放\n播放链接: ${url}=${content}\n如不能播放请输出 /vip 输出帮助文档哦`
+}
+
+// 微博热搜，长度不能过多，不然会报错
+exports.replyWb = async function () {
+  const { data } = await get('https://weibo.com/ajax/statuses/hot_band')
+  const { band_list, hotgov } = data
+  const list = [`<a href='${hotgov.url}'>${hotgov.name}</a>\n`].concat(
+    band_list
+      .filter(i => i.mblog)
+      .slice(0, 16)
+      .map(
+        (item, idx) =>
+          `<a href='https://s.weibo.com/weibo?q=${item.word}'>${idx + 1}.${item.word}</a>\n`
+      )
+  )
+  return list.join('\n')
+}
+
+function concatDataStream(formData) {
+  return new Promise(resolve => {
+    formData.pipe(
+      concatStream({ encoding: 'buffer' }, async data => {
+        resolve(data)
+      })
+    )
+  })
+}
+
+exports.replyGirlImg = async function () {
+  const imgData = await get('http://api.btstu.cn/sjbz/zsy.php', null, {
+    responseType: 'stream'
+  })
+  let formData = new FormData()
+  formData.append('media', imgData)
+  const data = await concatDataStream(formData)
+  const { media_id } = await getWechat.handle('uploadMedia', data)
+  return {
+    type: 'image',
+    mediaId: media_id
+  }
 }

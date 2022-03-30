@@ -22,4 +22,4 @@ const wechatCfg = {
     }
   }
 }
-exports.getWechat = () => new Wechat(wechatCfg.wechat)
+exports.getWechat = new Wechat(wechatCfg.wechat)

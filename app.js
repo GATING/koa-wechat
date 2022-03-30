@@ -48,7 +48,7 @@
           onFileBegin(name, file) {
             // 最终要保存到的文件夹目录
             const dirName = getUploadDirName()
-            const fileName = uuid()
+            const fileName = uuid.v4()
             const dir = resolve(__dirname, `public/uploads/${dirName}`)
             // 检查文件夹是否存在如果不存在则新建文件夹
             confirmPath(dir)
@@ -70,9 +70,8 @@
     initRoutes(app)
     app.listen(port, async () => {
       const { getWechat } = require('./wechat')
-      getWechat()
       // 木有创建菜单的权限
-      // const res = await getWechat().handle('createMenu', require('./wechat/menu'))
+      // const res = await getWechat.handle('createMenu', require('./wechat/menu'))
       // console.log('创建菜单成功', res)
       console.log(`listen successd`)
       console.log(`服务器运行于 http://localhost:${port}`)

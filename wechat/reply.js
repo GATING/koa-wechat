@@ -1,4 +1,4 @@
-const { replyJd, replyVip, vipHelp, replyHelp } = require('./bot')
+const { replyJd, replyVip, vipHelp, replyHelp, replyWb, replyGirlImg } = require('./bot')
 const help = '亲爱的，欢迎关注磨蹭的小时光'
 const urlReg = /(((ht|f)tps?):\/\/)?[\w-]+(\.[\w-]+)+([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])?/
 
@@ -30,6 +30,10 @@ const replyEvent = () => {
           return replyHelp(content)
         } else if (/^\/?vip$/.test(content)) {
           return vipHelp(content)
+        } else if (/^微博热?搜?$/.test(content)) {
+          return replyWb(content)
+        } else if (/^(美女.?片?|小?姐姐)$/.test(content)) {
+          return replyGirlImg(content)
         } else if (urlReg.test(content)) {
           //判断链接是否来自于京东
           if (content.includes('jd') || content.includes('jingxi')) {
@@ -38,8 +42,10 @@ const replyEvent = () => {
             return replyVip(content)
           }
         }
-
-        return 'Oh, 暂时无法理解 ' + content + ' 这句话'
+        return (
+          `Oh, 暂时无法理解 <a href='https://www.baidu.com/s?wd=${content}'>${content}</a>` +
+          ' 这句话,如需帮助请回复 <a href="weixin://bizmsgmenu?msgmenucontent=help">/help</a> 哦'
+        )
       }
     ],
     [

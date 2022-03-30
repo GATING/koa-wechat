@@ -1,5 +1,4 @@
 const axios = require('axios')
-const qs = require('qs')
 const log = require('./log')
 
 const errorStatus = {
@@ -20,7 +19,7 @@ const errorStatus = {
 }
 
 const request = axios.create({
-  baseURL: 'https://api.weixin.qq.com/cgi-bin/',
+  baseURL: 'https://api.weixin.qq.com/cgi-bin',
   timeout: 10000
 })
 

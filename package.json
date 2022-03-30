@@ -12,8 +12,10 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.26.1",
+    "concat-stream": "^2.0.0",
     "dotenv": "^16.0.0",
     "ejs": "^3.1.6",
+    "form-data": "^4.0.0",
     "glob": "^7.2.0",
     "koa": "^2.13.4",
     "koa-body": "^4.2.0",

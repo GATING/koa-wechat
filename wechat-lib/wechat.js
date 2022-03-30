@@ -3,6 +3,7 @@ module.exports = class Wechat {
   constructor(opts) {
     this.opts = Object.assign({}, opts)
     this.appID = opts.appID
+    this.token = opts.token
     this.appSecret = opts.appSecret
     this.getAccessToken = opts.getAccessToken
     this.saveAccessToken = opts.saveAccessToken
@@ -70,5 +71,14 @@ module.exports = class Wechat {
   // 获取菜单
   fetchMenu(token) {
     return get(`/menu/get?access_token=${token}`)
+  }
+
+  // 上传临时素材
+  async uploadMedia(token, data, type = 'image') {
+    return post(`/media/upload?access_token=${token}&type=${type}`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
   }
 }
