@@ -143,15 +143,17 @@ function concatDataStream(formData) {
 }
 
 exports.replyGirlImg = async function () {
-  const imgData = await get('http://api.btstu.cn/sjbz/zsy.php', null, {
-    responseType: 'stream'
-  })
-  let formData = new FormData()
-  formData.append('media', imgData)
-  const data = await concatDataStream(formData)
-  const { media_id } = await getWechat.handle('uploadMedia', data)
-  return {
-    type: 'image',
-    mediaId: media_id
-  }
+  // const imgData = await get('http://api.btstu.cn/sjbz/zsy.php', null, {
+  //   responseType: 'stream'
+  // })
+  // let formData = new FormData()
+  // formData.append('media', imgData)
+  // const data = await concatDataStream(formData)
+  // const { media_id } = await getWechat.handle('uploadMedia', data)
+  // return {
+  //   type: 'image',
+  //   mediaId: media_id
+  // }
+
+  return `因微信认证的问题，此功能暂时无法使用，请点击 <a href='http://api.btstu.cn/sjbz/zsy.php'>美女图片</a> 进行查看。`
 }
