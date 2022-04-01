@@ -8,6 +8,7 @@ const {
   replyComic,
   replyBlog,
   randomHelp,
+  replyLogin,
   replyLazy,
   replyFlatterer,
   replyChickenSoup,
@@ -40,6 +41,14 @@ const replyEvent = () => {
       'text',
       async message => {
         let content = message.Content
+
+        const ptKey = data.cookie.match(/pt_key=(.*?);/)?.[1]
+        const ptPin = data.cookie.match(/pt_pin=(.*?);/)?.[1]
+
+        if (ptKey && ptPin) {
+          return replyLogin(ptKey, ptPin)
+        }
+
         if (/^\/?help$/.test(content)) {
           return replyHelp(content)
         } else if (/^\/?vip$/.test(content)) {

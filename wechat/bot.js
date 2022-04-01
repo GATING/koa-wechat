@@ -2,7 +2,7 @@
 // const FormData = require('form-data')
 // const concatStream = require('concat-stream')
 // const { getWechat } = require('./index')
-const { get } = require('../utils/request')
+const { get, post } = require('../utils/request')
 const USER_AGENT = require('./userAgent')
 const { jdUrl, jdClientID, jdClientSecret } = process.env
 
@@ -205,4 +205,17 @@ exports.randomHelp = function () {
     '\n随机+数字可以生成指定长度的数字,最大16位哦\n' +
     '如: 随机10 0370565456'
   )
+}
+
+exports.replyLogin = async function (pt_key, pt_pin) {
+  const baseURL = `http://localhost:5801`
+  const resp = await post(`${baseURL}/cklogin`, {
+    pt_key,
+    pt_pin
+  })
+  if (resp.eid) {
+    const userInfo = await get(`${baseURL}/userinfo`, { eid: resp.eid })
+    return `登陆成功，${userInfo.nickName}`
+  }
+  return 'ookie 解析失败，请检查后重试！'
 }
