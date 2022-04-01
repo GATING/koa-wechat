@@ -17,7 +17,7 @@ ENV NPM_CONFIG_LOGLEVEL warn
 RUN npm install --production
 
 # Expose the listening port of your app
-EXPOSE 3000
+EXPOSE 80
 
 # Show current folder structure in logs
 # RUN ls -al -R
