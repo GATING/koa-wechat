@@ -7,7 +7,10 @@ const {
   replyGirlImg,
   replyComic,
   replyBlog,
+  randomHelp,
   replyLazy,
+  replyFlatterer,
+  replyChickenSoup,
   replyRandomFace
 } = require('./bot')
 const help = '亲爱的，欢迎关注磨蹭的小时光'
@@ -41,6 +44,8 @@ const replyEvent = () => {
           return replyHelp(content)
         } else if (/^\/?vip$/.test(content)) {
           return vipHelp(content)
+        } else if (/^\/?random$/.test(content)) {
+          return randomHelp(content)
         } else if (/^微博热?搜?$/.test(content)) {
           return replyWb(content)
         } else if (/^(美女.?片?|小?姐姐)$/.test(content)) {
@@ -53,6 +58,12 @@ const replyEvent = () => {
           return replyLazy(content)
         } else if (/^随机(.脸)$/.test(content)) {
           return replyRandomFace(content)
+        } else if (/^随机数?字?(\d+)?$/.test(content)) {
+          const random = ~~content.match(/\d+/)?.[0] || 4
+          if (random <= 1 || random > 15) {
+            return '请输入正确的数字哦，最大15位'
+          }
+          return Math.floor(Math.random() * Math.pow(10, random + 1))
         } else if (/^舔狗(日记)?$/.test(content)) {
           return replyFlatterer()
         } else if (/^毒?鸡汤$/.test(content)) {

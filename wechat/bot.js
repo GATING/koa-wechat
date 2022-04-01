@@ -69,8 +69,17 @@ exports.replyHelp = function () {
     '目前支持的功能有：\n' +
     '\n直接输入京东的商品链接，可以直接转链\n' +
     '\n直接输入视频链接可以跳转到解析链接播放会员视频\n' +
-    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=vip&msgmenuid=1asdsad">/vip</a> 可以切换源播放视频\n' +
-    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=help&msgmenuid=1asdsad">/help</a> 可以再次回到这里哦\n'
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=摸鱼&msgmenuid=1">摸鱼</a> 欢迎你进入摸鱼的一套哦\n' +
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=随机人脸&msgmenuid=1">随机人脸</a> 可以生成一份随机的人脸\n' +
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=随机数&msgmenuid=1">随机数</a> 可以生成一份随机数，默认4位\n' +
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=毒鸡汤&msgmenuid=1">毒鸡汤</a> 可以查看鸡汤\n' +
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=舔狗日记&msgmenuid=2">舔狗日记</a> 可以输出舔狗日记\n' +
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=每日一言&msgmenuid=3">每日一言</a> 可以输出每日一言\n' +
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=美女图片&msgmenuid=3">美女图片</a> 可以输出美女图片哦\n' +
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=动漫图片&msgmenuid=3">动漫图片</a> 可以输出动漫图片哦\n' +
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=vip&msgmenuid=3">/vip</a> 可以切换源播放视频\n' +
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=random&msgmenuid=3">/random</a> 可以查看随机数的用法\n' +
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=help&msgmenuid=4">/help</a> 可以再次回到这里哦\n'
   )
 }
 
@@ -187,4 +196,12 @@ exports.replyChickenSoup = async function () {
 exports.replyLoveTalk = async function () {
   const text = await get('https://api.ixiaowai.cn/api/ylapi.php')
   return text
+}
+
+exports.randomHelp = function () {
+  return (
+    '欢迎使用随机数的功能：\n' +
+    '\n随机+数字可以生成指定长度的数字,最大16位哦\n' +
+    '如: 随机10 0370565456'
+  )
 }
