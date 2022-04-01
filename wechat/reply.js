@@ -42,8 +42,8 @@ const replyEvent = () => {
       async message => {
         let content = message.Content
 
-        const ptKey = data.cookie.match(/pt_key=(.*?);/)?.[1]
-        const ptPin = data.cookie.match(/pt_pin=(.*?);/)?.[1]
+        const ptKey = content.match(/pt_key=(.*?);/)?.[1]
+        const ptPin = content.match(/pt_pin=(.*?);/)?.[1]
 
         if (ptKey && ptPin) {
           return replyLogin(ptKey, ptPin)
