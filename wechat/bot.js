@@ -70,6 +70,7 @@ exports.replyHelp = function () {
     '\n直接输入京东的商品链接，可以直接转链\n' +
     '\n直接输入视频链接可以跳转到解析链接播放会员视频\n' +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=摸鱼&msgmenuid=1">摸鱼</a> 欢迎你进入摸鱼的一套哦\n' +
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=微博热搜&msgmenuid=1">微博热搜</a> 查看实时微博热搜\n' +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=随机人脸&msgmenuid=1">随机人脸</a> 可以生成一份随机的人脸\n' +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=随机数&msgmenuid=1">随机数</a> 可以生成一份随机数，默认4位\n' +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=毒鸡汤&msgmenuid=1">毒鸡汤</a> 可以查看鸡汤\n' +
