@@ -156,3 +156,35 @@ exports.replyGirlImg = async function () {
 
   return `因微信认证的问题，此功能暂时无法使用，请点击 <a href='http://api.btstu.cn/sjbz/zsy.php'>美女图片</a> 进行查看。`
 }
+
+exports.replyComic = async function () {
+  return `因微信认证的问题，此功能暂时无法使用，请点击 <a href='https://pximg2.rainchan.win/img'>动漫</a> 进行查看。`
+}
+
+exports.replyBlog = async function (content) {
+  return `<a href='https://gatings.cn'>${content}</a>`
+}
+
+exports.replyRandomFace = async function () {
+  return `因微信认证的问题，此功能暂时无法使用，请点击 <a href='https://thispersondoesnotexist.com/image'>随机人脸</a> 进行查看。`
+}
+
+exports.replyLazy = async function () {
+  const text = await get('https://vps.gamehook.top/api/face/my')
+  return text.replace(/<br\/?>/g, '\n')
+}
+
+exports.replyFlatterer = async function () {
+  const text = await get('https://api.ixiaowai.cn/tgrj/index.php')
+  return text
+}
+
+exports.replyChickenSoup = async function () {
+  const { data } = await get('http://api.lkblog.net/ws/api.php')
+  return data
+}
+
+exports.replyLoveTalk = async function () {
+  const text = await get('https://api.ixiaowai.cn/api/ylapi.php')
+  return text
+}

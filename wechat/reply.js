@@ -1,4 +1,15 @@
-const { replyJd, replyVip, vipHelp, replyHelp, replyWb, replyGirlImg } = require('./bot')
+const {
+  replyJd,
+  replyVip,
+  vipHelp,
+  replyHelp,
+  replyWb,
+  replyGirlImg,
+  replyComic,
+  replyBlog,
+  replyLazy,
+  replyRandomFace
+} = require('./bot')
 const help = '亲爱的，欢迎关注磨蹭的小时光'
 const urlReg = /(((ht|f)tps?):\/\/)?[\w-]+(\.[\w-]+)+([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])?/
 
@@ -34,6 +45,20 @@ const replyEvent = () => {
           return replyWb(content)
         } else if (/^(美女.?片?|小?姐姐)$/.test(content)) {
           return replyGirlImg(content)
+        } else if (/^动[漫画].?片?$/.test(content)) {
+          return replyComic(content)
+        } else if (/^(博客|磨蹭(先生)?|gating)$/.test(content)) {
+          return replyBlog(content)
+        } else if (/^.{0,2}摸鱼.{0,2}$/.test(content)) {
+          return replyLazy(content)
+        } else if (/^随机(.脸)$/.test(content)) {
+          return replyRandomFace(content)
+        } else if (/^舔狗(日记)?$/.test(content)) {
+          return replyFlatterer()
+        } else if (/^毒?鸡汤$/.test(content)) {
+          return replyChickenSoup()
+        } else if (/^每?日?一言$/.test(content)) {
+          return replyLoveTalk()
         } else if (urlReg.test(content)) {
           //判断链接是否来自于京东
           if (content.includes('jd') || content.includes('jingxi')) {
