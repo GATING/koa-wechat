@@ -209,13 +209,14 @@ exports.randomHelp = function () {
 
 exports.replyLogin = async function (pt_key, pt_pin) {
   const baseURL = `http://localhost:5801`
-  const resp = await post(`${baseURL}/cklogin`, {
+  const resp = await post(`${baseURL}/api/cklogin`, {
     pt_key,
     pt_pin
   })
-  if (resp.eid) {
-    const userInfo = await get(`${baseURL}/userinfo`, { eid: resp.eid })
-    return `登陆成功，${userInfo.nickName}`
+  const { data, message } = resp || {}
+  if (data?.eid) {
+    const resp = await get(`${baseURL}/api/userinfo`, { eid: data?.eid })
+    return `登陆成功，${resp.data.nickName}`
   }
-  return 'ookie 解析失败，请检查后重试！'
+  return message || 'cookie 解析失败，请检查后重试！'
 }
