@@ -60,10 +60,10 @@ const replyEvent = () => {
           return replyRandomFace(content)
         } else if (/^随机数?字?(\d+)?$/.test(content)) {
           const random = ~~content.match(/\d+/)?.[0] || 4
-          if (random <= 1 || random > 15) {
-            return '请输入正确的数字哦，最大15位'
+          if (random <= 1 || random > 16) {
+            return '请输入正确的数字哦，最大16位'
           }
-          return Math.floor(Math.random() * Math.pow(10, random + 1))
+          return Math.floor(Math.random() * Math.pow(10, random))
         } else if (/^舔狗(日记)?$/.test(content)) {
           return replyFlatterer()
         } else if (/^毒?鸡汤$/.test(content)) {
