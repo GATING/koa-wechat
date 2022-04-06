@@ -13,10 +13,68 @@ const {
   replyFlatterer,
   replyChickenSoup,
   replyRandomFace,
-  replyLoveTalk
+  replyLoveTalk,
+  replyWeather,
+  weatherHelp
 } = require('./bot')
 const help = '亲爱的，欢迎关注磨蹭的小时光'
 const urlReg = /(((ht|f)tps?):\/\/)?[\w-]+(\.[\w-]+)+([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])?/
+
+async function replyText(message) {
+  let content = message.Content
+  const ptKey = content.match(/pt_key=(.*?);/)?.[1]
+  const ptPin = content.match(/pt_pin=(.*?);/)?.[1]
+  if (ptKey && ptPin) {
+    return replyLogin(ptKey, ptPin)
+  }
+
+  if (/^\/?help|帮助$/.test(content)) {
+    return replyHelp(content)
+  } else if (/^\/?vip$/.test(content)) {
+    return vipHelp(content)
+  } else if (/^\/?random$/.test(content)) {
+    return randomHelp(content)
+  } else if (/^\/?weather$/.test(content)) {
+    return weatherHelp()
+  } else if (/^微博热?搜?$/.test(content)) {
+    return replyWb(content)
+  } else if (/^(美女.?片?|小?姐姐)$/.test(content)) {
+    return replyGirlImg(content)
+  } else if (/^动[漫画].?片?$/.test(content)) {
+    return replyComic(content)
+  } else if (/^(博客|磨蹭(先生)?|gating)$/.test(content)) {
+    return replyBlog(content)
+  } else if (/^.{0,2}摸鱼.{0,2}$/.test(content)) {
+    return replyLazy(content)
+  } else if (/^随机(.脸)$/.test(content)) {
+    return replyRandomFace(content)
+  } else if (/^随机数?字?(\d+)?$/.test(content)) {
+    const random = ~~content.match(/\d+/)?.[0] || 4
+    if (random <= 1 || random > 16) {
+      return '请输入正确的数字哦，最大16位'
+    }
+    return Math.floor(Math.random() * Math.pow(10, random))
+  } else if (/^舔狗(日记)?$/.test(content)) {
+    return replyFlatterer()
+  } else if (/^毒?鸡汤$/.test(content)) {
+    return replyChickenSoup()
+  } else if (/^每?日?一言$/.test(content)) {
+    return replyLoveTalk()
+  } else if (/(.{0,8})天气$/.test(content)) {
+    return replyWeather(content, message)
+  } else if (urlReg.test(content)) {
+    //判断链接是否来自于京东
+    if (content.includes('jd') || content.includes('jingxi')) {
+      return await replyJd(content)
+    } else {
+      return replyVip(content)
+    }
+  }
+  return (
+    `Oh, 暂时无法理解 <a href='https://www.baidu.com/s?wd=${content}'>${content}</a>` +
+    ' 这句话,如需帮助请回复 <a href="weixin://bizmsgmenu?msgmenucontent=help">/help</a> 哦'
+  )
+}
 
 // 自定义菜单
 // https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141013
@@ -28,8 +86,7 @@ const replyEvent = () => {
       async message => {
         let content = message.Recognition
         content = content.slice(0, -1)
-        reply = content
-        return reply
+        return await replyText(content)
       }
     ],
     [
@@ -38,62 +95,7 @@ const replyEvent = () => {
         console.log(message.PicUrl)
       }
     ],
-    [
-      'text',
-      async message => {
-        let content = message.Content
-
-        const ptKey = content.match(/pt_key=(.*?);/)?.[1]
-        const ptPin = content.match(/pt_pin=(.*?);/)?.[1]
-
-        if (ptKey && ptPin) {
-          return replyLogin(ptKey, ptPin)
-        }
-
-        if (/^\/?help$/.test(content)) {
-          return replyHelp(content)
-        } else if (/^\/?vip$/.test(content)) {
-          return vipHelp(content)
-        } else if (/^\/?random$/.test(content)) {
-          return randomHelp(content)
-        } else if (/^微博热?搜?$/.test(content)) {
-          return replyWb(content)
-        } else if (/^(美女.?片?|小?姐姐)$/.test(content)) {
-          return replyGirlImg(content)
-        } else if (/^动[漫画].?片?$/.test(content)) {
-          return replyComic(content)
-        } else if (/^(博客|磨蹭(先生)?|gating)$/.test(content)) {
-          return replyBlog(content)
-        } else if (/^.{0,2}摸鱼.{0,2}$/.test(content)) {
-          return replyLazy(content)
-        } else if (/^随机(.脸)$/.test(content)) {
-          return replyRandomFace(content)
-        } else if (/^随机数?字?(\d+)?$/.test(content)) {
-          const random = ~~content.match(/\d+/)?.[0] || 4
-          if (random <= 1 || random > 16) {
-            return '请输入正确的数字哦，最大16位'
-          }
-          return Math.floor(Math.random() * Math.pow(10, random))
-        } else if (/^舔狗(日记)?$/.test(content)) {
-          return replyFlatterer()
-        } else if (/^毒?鸡汤$/.test(content)) {
-          return replyChickenSoup()
-        } else if (/^每?日?一言$/.test(content)) {
-          return replyLoveTalk()
-        } else if (urlReg.test(content)) {
-          //判断链接是否来自于京东
-          if (content.includes('jd') || content.includes('jingxi')) {
-            return await replyJd(content)
-          } else {
-            return replyVip(content)
-          }
-        }
-        return (
-          `Oh, 暂时无法理解 <a href='https://www.baidu.com/s?wd=${content}'>${content}</a>` +
-          ' 这句话,如需帮助请回复 <a href="weixin://bizmsgmenu?msgmenucontent=help">/help</a> 哦'
-        )
-      }
-    ],
+    ['text', async message => replyText(message)],
     [
       'location',
       async message => {

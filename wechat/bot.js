@@ -1,8 +1,10 @@
-// const fs = require('fs')
+const fs = require('fs')
+const path = require('path')
 // const FormData = require('form-data')
 // const concatStream = require('concat-stream')
 // const { getWechat } = require('./index')
 const { get, post } = require('../utils/request')
+const { parseXML } = require('../wechat-lib/util')
 const USER_AGENT = require('./userAgent')
 const { jdUrl, jdClientID, jdClientSecret } = process.env
 
@@ -78,7 +80,9 @@ exports.replyHelp = function () {
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=每日一言&msgmenuid=3">每日一言</a> 可以输出每日一言\n' +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=美女图片&msgmenuid=3">美女图片</a> 可以输出美女图片哦\n' +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=动漫图片&msgmenuid=3">动漫图片</a> 可以输出动漫图片哦\n' +
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=天气&msgmenuid=3">天气</a> 可以输出指定城市的天气哦，默认值为广州哦\n' +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=vip&msgmenuid=3">/vip</a> 可以切换源播放视频\n' +
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=weather&msgmenuid=3">/weather</a> 可以查看天气的用法\n' +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=random&msgmenuid=3">/random</a> 可以查看随机数的用法\n' +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=help&msgmenuid=4">/help</a> 可以再次回到这里哦\n'
   )
@@ -120,7 +124,7 @@ exports.vipHelp = function () {
   )
 }
 exports.replyVip = function (content) {
-  const index = ~~content.match(/vip(\d+)/)?.[1]
+  const index = ~~content.match(/vip\s+(\d+)/)?.[1]
   const { name, url } = parseInterfaces[index ? index - 1 : 0]
   return `目前播放源是:${name},请复制到浏览器播放\n播放链接: ${url}=${content}\n如不能播放请输出 /vip 输出帮助文档哦`
 }
@@ -219,4 +223,55 @@ exports.replyLogin = async function (pt_key, pt_pin) {
     return `登陆成功，${resp.data.nickName}`
   }
   return message || 'cookie 解析失败，请检查后重试！'
+}
+
+exports.weatherHelp = function () {
+  return (
+    '欢迎使用查询天气的功能：\n' +
+    '\n城市+天气可以查询指定城市的天气\n' +
+    '如: 广州天气\n' +
+    '\n默认+城市+天气可以查询指定城市的天气，并指定属于你的默认值哦\n' +
+    'ps：原默认值为广州哦~'
+  )
+}
+
+const cityPath = path.resolve(__dirname, './city.json')
+exports.replyWeather = async function (content, { FromUserName }) {
+  let userCity = {}
+  if (fs.existsSync(cityPath)) {
+    userCity = require(cityPath)
+  }
+  const match = content?.match(/(默认)?(.{0,8})天气$/)
+  const city = match[2] || userCity[FromUserName] || '广州'
+  const data = await get('http://wthrcdn.etouch.cn/WeatherApi', {
+    city
+  })
+  if (match[1]) {
+    userCity[FromUserName] = city
+    fs.writeFileSync(cityPath, JSON.stringify(userCity))
+  }
+
+  const { resp } = await parseXML(data)
+
+  if (resp.error) {
+    return `暂不支持该地区`
+  }
+  const { wendu, fengli, shidu, fengxiang, forecast, zhishus, yesterday } = resp
+  const blackList = ['钓鱼指数', '赏月指数', '洗车指数', '种树指数']
+  const zhishu = zhishus?.[0]?.zhishu
+    .map(({ name, detail }) => {
+      if (blackList.includes(name[0])) {
+        return
+      }
+      return `${name}：${detail}`
+    })
+    .filter(i => i)
+    .join('\n')
+  const _yesterday = yesterday.map(
+    ({ date_1, high_1, low_1, day_1 }) => `${date_1} ${day_1[0].type_1}:${high_1}，${low_1}`
+  )
+  const weather = forecast?.[0].weather
+    .map(({ date, high, low, day }) => `${date} ${day[0].type}:${high}，${low}`)
+    .join('\n')
+  return `${city} ${wendu[0]}°C ${forecast?.[0].weather[0].day[0].type} 湿度:${shidu[0]} 风力:${fengli[0]} 风向:${fengxiang[0]}\n昨日天气：\n${_yesterday}\n预测天气：\n${weather}\n指数：\n${zhishu}`
 }

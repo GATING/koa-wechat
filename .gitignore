@@ -202,4 +202,6 @@ dist
 dist-ssr
 *.local
 
+# koa-wechat
 token.json
+city.json
