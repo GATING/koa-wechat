@@ -257,7 +257,7 @@ exports.replyWeather = async function (content, { FromUserName }) {
     return `暂不支持该地区`
   }
   const { wendu, fengli, shidu, fengxiang, forecast, zhishus, yesterday } = resp
-  const blackList = ['钓鱼指数', '赏月指数', '洗车指数', '种树指数']
+  const blackList = ['钓鱼指数', '赏月指数', '洗车指数', '中暑指数']
   const zhishu = zhishus?.[0]?.zhishu
     .map(({ name, detail }) => {
       if (blackList.includes(name[0])) {
