@@ -1,7 +1,7 @@
 ;(async () => {
   try {
     require('dotenv').config()
-    const { resolve } = require('path')
+    const { resolve, extname } = require('path')
     const { port } = require('./config')
     const { getUploadDirName, confirmPath } = require('./utils')
 
@@ -49,12 +49,13 @@
             // 最终要保存到的文件夹目录
             const dirName = getUploadDirName()
             const fileName = uuid.v4()
-            const dir = resolve(__dirname, `public/uploads/${dirName}`)
+            const ext = extname(file.name)
+            const dir = resolve(__dirname, `public/uploads/${name}/${dirName}`)
             // 检查文件夹是否存在如果不存在则新建文件夹
             confirmPath(dir)
             // 重新覆盖 file.path 属性
-            file.path = `${dir}/${fileName}`
-            app.context.uploadPath = `${dirName}/${fileName}`
+            file.path = `${dir}/${fileName}${ext}`
+            app.context.uploadPath = `${name}/${dirName}/${fileName}${ext}`
           }
         }
       })

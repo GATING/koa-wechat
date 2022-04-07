@@ -1,9 +1,11 @@
 const fs = require('fs')
 const path = require('path')
+const glob = require('glob')
 // const FormData = require('form-data')
 // const concatStream = require('concat-stream')
 // const { getWechat } = require('./index')
 const { get, post } = require('../utils/request')
+const { getIPAddress } = require('../utils')
 const { parseXML } = require('../wechat-lib/util')
 const USER_AGENT = require('./userAgent')
 const { jdUrl, jdClientID, jdClientSecret } = process.env
@@ -319,4 +321,14 @@ exports.replyWeather = async function (content, { FromUserName }) {
     .map(({ date, high, low, day }) => `${date} ${day[0].type}:${high}，${low}`)
     .join('\n')
   return `${city} ${wendu[0]}°C ${forecast?.[0].weather[0].day[0].type} 湿度:${shidu[0]} 风力:${fengli[0]} 风向:${fengxiang[0]}\n昨日天气：\n${_yesterday}\n预测天气：\n${weather}\n指数：\n${zhishu}`
+}
+
+exports.replyLuHan = async function () {
+  const imgUrl = glob
+    .sync(path.resolve(__dirname, '../public/uploads/777/**/*'))
+    .filter(filePaht => fs.statSync(filePaht).isFile())
+    .sort(() => Math.random() > 0.5)[0]
+
+  const filePath = imgUrl.match(/.*public\/(.*)/)[1]
+  return `http://${getIPAddress()}/${filePath}`
 }

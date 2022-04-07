@@ -19,10 +19,11 @@ const {
   replyScumbag,
   replyHistory,
   replyRainbow,
-  replyCOVID
+  replyCOVID,
+  replyLuHan
 } = require('./bot')
 const help = '亲爱的，欢迎关注磨蹭的小时光'
-const urlReg = /(((ht|f)tps?):\/\/)?[\w-]+(\.[\w-]+)+([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])?/
+const urlReg = /(((ht|f)tps?):\/\/)?[\w-]+(\.[\w-]+)+([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])?/i
 
 async function replyText(message) {
   let content = message.Content
@@ -32,14 +33,16 @@ async function replyText(message) {
     return replyLogin(ptKey, ptPin)
   }
 
-  if (/^\/?help|帮助$/.test(content)) {
+  if (/^\/?help|帮助$/i.test(content)) {
     return replyHelp(content)
-  } else if (/^\/?vip$/.test(content)) {
+  } else if (/^\/?vip$/i.test(content)) {
     return vipHelp(content)
-  } else if (/^\/?random$/.test(content)) {
+  } else if (/^\/?random$/i.test(content)) {
     return randomHelp(content)
-  } else if (/^\/?weather$/.test(content)) {
+  } else if (/^\/?weather$/i.test(content)) {
     return weatherHelp()
+  } else if (/^鹿晗|lu\s?han$/i.test(content)) {
+    return replyLuHan()
   } else if (/^微博热?搜?$/.test(content)) {
     return replyWb(content)
   } else if (/^彩虹屁?$/.test(content)) {
