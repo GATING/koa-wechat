@@ -15,7 +15,10 @@ const {
   replyRandomFace,
   replyLoveTalk,
   replyWeather,
-  weatherHelp
+  weatherHelp,
+  replyScumbag,
+  replyHistory,
+  replyRainbow
 } = require('./bot')
 const help = '亲爱的，欢迎关注磨蹭的小时光'
 const urlReg = /(((ht|f)tps?):\/\/)?[\w-]+(\.[\w-]+)+([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])?/
@@ -38,6 +41,8 @@ async function replyText(message) {
     return weatherHelp()
   } else if (/^微博热?搜?$/.test(content)) {
     return replyWb(content)
+  } else if (/^彩虹屁?$/.test(content)) {
+    return replyRainbow()
   } else if (/^(美女.?片?|小?姐姐)$/.test(content)) {
     return replyGirlImg(content)
   } else if (/^动[漫画].?片?$/.test(content)) {
@@ -56,8 +61,14 @@ async function replyText(message) {
     return Math.floor(Math.random() * Math.pow(10, random))
   } else if (/^舔狗(日记)?$/.test(content)) {
     return replyFlatterer()
+  } else if (/^渣男(语录)?$/.test(content)) {
+    return replyScumbag()
+  } else if (/^历史上的今天?$/.test(content)) {
+    return replyHistory()
   } else if (/^毒?鸡汤$/.test(content)) {
     return replyChickenSoup()
+  } else if (/^(.{0,5})疫情(.{0,5})$/.test(content)) {
+    return replyCOVID(content)
   } else if (/^每?日?一言$/.test(content)) {
     return replyLoveTalk()
   } else if (/(.{0,8})天气$/.test(content)) {

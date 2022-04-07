@@ -81,6 +81,7 @@ exports.replyHelp = function () {
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=美女图片&msgmenuid=3">美女图片</a> 可以输出美女图片哦\n' +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=动漫图片&msgmenuid=3">动漫图片</a> 可以输出动漫图片哦\n' +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=天气&msgmenuid=3">天气</a> 可以输出指定城市的天气哦，默认值为广州哦\n' +
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=疫情&msgmenuid=3">天气</a> 可以疫情可以\n' +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=vip&msgmenuid=3">/vip</a> 可以切换源播放视频\n' +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=weather&msgmenuid=3">/weather</a> 可以查看天气的用法\n' +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=random&msgmenuid=3">/random</a> 可以查看随机数的用法\n' +
@@ -201,6 +202,50 @@ exports.replyChickenSoup = async function () {
 exports.replyLoveTalk = async function () {
   const text = await get('https://api.ixiaowai.cn/api/ylapi.php')
   return text
+}
+
+exports.replyScumbag = async function () {
+  const text = await get('https://api.iyk0.com/zhanan/')
+  return text
+}
+
+exports.replyHistory = async function () {
+  const text = await get('https://api.ooomn.com/api/history?format=json')
+  return text
+}
+
+exports.replyRainbow = async function () {
+  const text = await get('https://api.iyk0.com/chp/')
+  return text
+}
+
+exports.replyCOVID = async function (content) {
+  const match = content.match(/(.{0,5})疫情(.{0,5})$/)
+  const city = match?.[1] || match?.[2] || '广州'
+  const resp = await get('https://api.iyk0.com/yq/', {
+    msg: city
+  })
+  if (resp.code != 200) {
+    return resp.msg
+  }
+  return (
+    '查询地区:' +
+    resp.查询地区 +
+    '\n目前确诊：' +
+    resp.目前确诊 +
+    '\n死亡人数：' +
+    resp.死亡人数 +
+    '\n治愈人数：' +
+    resp.治愈人数 +
+    '\n新增确诊:' +
+    resp.新增确诊 +
+    '\n现存确诊:' +
+    resp.现存确诊 +
+    '\n现存无症状:' +
+    resp.现存无症状 +
+    '\n更新时间:' +
+    resp.time
+  )
 }
 
 exports.randomHelp = function () {
