@@ -18,7 +18,8 @@ const {
   weatherHelp,
   replyScumbag,
   replyHistory,
-  replyRainbow
+  replyRainbow,
+  replyCOVID
 } = require('./bot')
 const help = '亲爱的，欢迎关注磨蹭的小时光'
 const urlReg = /(((ht|f)tps?):\/\/)?[\w-]+(\.[\w-]+)+([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])?/
