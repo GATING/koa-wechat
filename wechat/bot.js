@@ -5,7 +5,6 @@ const glob = require('glob')
 // const concatStream = require('concat-stream')
 // const { getWechat } = require('./index')
 const { get, post } = require('../utils/request')
-const { getIPAddress } = require('../utils')
 const { parseXML } = require('../wechat-lib/util')
 const USER_AGENT = require('./userAgent')
 const { jdUrl, jdClientID, jdClientSecret } = process.env
@@ -328,12 +327,10 @@ exports.replyLuHan = async function (content) {
     .sync(path.resolve(__dirname, '../public/uploads/777/**/*'))
     .filter(filePaht => fs.statSync(filePaht).isFile())
     .sort(() => Math.random() > 0.5)[0]
-
+  const url = jdUrl.replace(/\:\d+\/?/, '/')
   const filePath = imgUrl?.match(/.*public\/(.*)/)[1]
   if (!filePath) {
     return `当前没有图片哦，请联系管理员上传`
   }
-  return `因微信认证的问题，此功能暂时无法使用，请点击 <a href='http://${getIPAddress()}/${filePath}'>${content}</a> 进行查看哦。`
+  return `因微信认证的问题，此功能暂时无法使用，请点击 <a href='${url}${filePath}'>${content}</a> 进行查看哦。`
 }
-
-console.log(this.replyLuHan())
