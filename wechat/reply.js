@@ -42,7 +42,7 @@ async function replyText(message) {
   } else if (/^\/?weather$/i.test(content)) {
     return weatherHelp()
   } else if (/^鹿晗|lu\s?han$/i.test(content)) {
-    return replyLuHan()
+    return replyLuHan(content)
   } else if (/^微博热?搜?$/.test(content)) {
     return replyWb(content)
   } else if (/^彩虹屁?$/.test(content)) {

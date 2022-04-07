@@ -323,12 +323,17 @@ exports.replyWeather = async function (content, { FromUserName }) {
   return `${city} ${wendu[0]}°C ${forecast?.[0].weather[0].day[0].type} 湿度:${shidu[0]} 风力:${fengli[0]} 风向:${fengxiang[0]}\n昨日天气：\n${_yesterday}\n预测天气：\n${weather}\n指数：\n${zhishu}`
 }
 
-exports.replyLuHan = async function () {
+exports.replyLuHan = async function (content) {
   const imgUrl = glob
     .sync(path.resolve(__dirname, '../public/uploads/777/**/*'))
     .filter(filePaht => fs.statSync(filePaht).isFile())
     .sort(() => Math.random() > 0.5)[0]
 
-  const filePath = imgUrl.match(/.*public\/(.*)/)[1]
-  return `http://${getIPAddress()}/${filePath}`
+  const filePath = imgUrl?.match(/.*public\/(.*)/)[1]
+  if (!filePath) {
+    return `当前没有图片哦，请联系管理员上传`
+  }
+  return `因微信认证的问题，此功能暂时无法使用，请点击 <a href='http://${getIPAddress()}/${filePath}'>${content}</a> 进行查看哦。`
 }
+
+console.log(this.replyLuHan())
