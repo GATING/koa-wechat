@@ -48,6 +48,9 @@ exports.replyJd = async function (content) {
       }
     }
   )
+  if (!linkInfo.data) {
+    return `当前商品不支持转链哦，请您直接购买即可(#^.^#)`
+  }
   const { price, imgList, promotionUrl, originalContext, couponAfterPrice } = linkInfo.data
   let title = `京东价￥${price}`
   if (couponAfterPrice) {
