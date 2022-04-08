@@ -203,8 +203,8 @@ exports.replyDeWatermark = async function (content) {
   })
   return [
     {
-      title,
-      description: '',
+      title: '去水印视频',
+      description: title,
       picUrl: cover,
       url
     }
