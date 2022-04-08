@@ -48,8 +48,7 @@ exports.replyJd = async function (content) {
       }
     }
   )
-  const { price, imgList, promotionUrl, originalContext, couponAfterPrice, discount } =
-    linkInfo.data
+  const { price, imgList, promotionUrl, originalContext, couponAfterPrice } = linkInfo.data
   let title = `京东价￥${price}`
   if (couponAfterPrice) {
     title += ' 券后价￥' + couponAfterPrice
@@ -199,13 +198,13 @@ exports.replyBuyerShow = async function () {
 }
 
 exports.replyDeWatermark = async function (content) {
-  const { author, title, cover, url } = await get('https://api.iyk0.com/qsy/', {
+  const { title, cover, url } = await get('https://api.iyk0.com/qsy/', {
     url: content
   })
   return [
     {
-      title: `作者：${author}`,
-      description: title,
+      title,
+      description: '',
       picUrl: cover,
       url
     }
