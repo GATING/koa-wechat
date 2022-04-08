@@ -72,6 +72,7 @@ exports.replyHelp = function () {
     '目前支持的功能有：\n' +
     '\n直接输入京东的商品链接，可以直接转链\n' +
     '\n直接输入视频链接可以跳转到解析链接播放会员视频\n' +
+    '\n直接输入抖音、B站等短视频链接，可以直接转链去水印\n' +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=摸鱼&msgmenuid=1">摸鱼</a> 欢迎你进入摸鱼的一套哦\n' +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=微博热搜&msgmenuid=1">微博热搜</a> 查看实时微博热搜\n' +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=随机人脸&msgmenuid=1">随机人脸</a> 可以生成一份随机的人脸\n' +
@@ -82,7 +83,7 @@ exports.replyHelp = function () {
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=美女图片&msgmenuid=3">美女图片</a> 可以输出美女图片哦\n' +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=动漫图片&msgmenuid=3">动漫图片</a> 可以输出动漫图片哦\n' +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=天气&msgmenuid=3">天气</a> 可以输出指定城市的天气哦，默认值为广州\n' +
-    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=疫情&msgmenuid=3">天气</a> 可以输出指定城市疫情哦，默认值为广州\n' +
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=疫情&msgmenuid=3">疫情</a> 可以输出指定城市疫情哦，默认值为广州\n' +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=vip&msgmenuid=3">/vip</a> 可以切换源播放视频\n' +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=weather&msgmenuid=3">/weather</a> 可以查看天气的用法\n' +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=random&msgmenuid=3">/random</a> 可以查看随机数的用法\n' +
@@ -183,6 +184,32 @@ exports.replyBlog = async function (content) {
 
 exports.replyRandomFace = async function () {
   return `因微信认证的问题，此功能暂时无法使用，请点击 <a href='https://thispersondoesnotexist.com/image'>随机人脸</a> 进行查看。`
+}
+
+exports.replyLeg = async function () {
+  return `因微信认证的问题，此功能暂时无法使用，请点击 <a href='https://api.iyk0.com/mtt'>美腿图</a> 进行查看。`
+}
+
+exports.replyBuyerShow = async function () {
+  return `因微信认证的问题，此功能暂时无法使用，请点击 <a href='https://api.iyk0.com/mjx'>美腿图</a> 进行查看。`
+}
+
+exports.replyBuyerShow = async function () {
+  return `因微信认证的问题，此功能暂时无法使用，请点击 <a href='https://api.iyk0.com/mjx'>美腿图</a> 进行查看。`
+}
+
+exports.replyDeWatermark = async function (content) {
+  const { author, title, cover, url } = await get('https://api.iyk0.com/qsy/', {
+    url: content
+  })
+  return [
+    {
+      title: `作者：${author}`,
+      description: title,
+      picUrl: cover,
+      url
+    }
+  ]
 }
 
 exports.replyLazy = async function () {

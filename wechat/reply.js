@@ -20,7 +20,10 @@ const {
   replyHistory,
   replyRainbow,
   replyCOVID,
-  replyLuHan
+  replyLuHan,
+  replyLeg,
+  replyBuyerShow,
+  replyDeWatermark
 } = require('./bot')
 const help = '亲爱的，欢迎关注磨蹭的小时光'
 const urlReg = /(((ht|f)tps?):\/\/)?[\w-]+(\.[\w-]+)+([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])?/i
@@ -49,6 +52,10 @@ async function replyText(message) {
     return replyRainbow()
   } else if (/^(美女.?片?|小?姐姐)$/.test(content)) {
     return replyGirlImg(content)
+  } else if (/^美腿图?$/.test(content)) {
+    return replyLeg()
+  } else if (/^(淘宝)?买家秀$/.test(content)) {
+    return replyBuyerShow()
   } else if (/^动[漫画].?片?$/.test(content)) {
     return replyComic(content)
   } else if (/^(博客|磨蹭(先生)?|gating)$/.test(content)) {
@@ -78,11 +85,29 @@ async function replyText(message) {
   } else if (/(.{0,8})天气$/.test(content)) {
     return replyWeather(content, message)
   } else if (urlReg.test(content)) {
+    const url = content.match(urlReg)[0]
     //判断链接是否来自于京东
-    if (content.includes('jd') || content.includes('jingxi')) {
-      return await replyJd(content)
+    if (url.includes('jd') || url.includes('jingxi')) {
+      return await replyJd(url)
+    } else if (
+      [
+        'douyin',
+        'bilibili',
+        'momo',
+        'weibo',
+        'instagram',
+        'kaishou',
+        'izuiyou',
+        'pipix',
+        'huoshanzhibo',
+        'weishi',
+        'quanmin',
+        'kg'
+      ].some(item => url.includes(item))
+    ) {
+      return replyDeWatermark(url)
     } else {
-      return replyVip(content)
+      return replyVip(url)
     }
   }
   return (
