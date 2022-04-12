@@ -74,7 +74,7 @@ async function replyText(message) {
   } else if (/^舔狗(日记)?$/.test(content)) {
     return replyFlatterer()
   } else if (/^(资产|羊毛|jd|豆子|京豆|喜豆)/.test(content)) {
-    return replyBean()
+    return replyBean(content, message)
   } else if (/^渣男(语录)?$/.test(content)) {
     return replyScumbag()
   } else if (/^历史上的今天?$/.test(content)) {
