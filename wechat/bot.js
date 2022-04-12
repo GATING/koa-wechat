@@ -425,7 +425,7 @@ exports.replyBean = async (content, { FromUserName }) => {
     }
     const { value: cookie, remarks, status } = user
     const remark = remarks?.replace(/remark\=(.*)?;/, '$1')
-    if (!status) {
+    if (status) {
       messageList.push(`${remark}已过期，请重新登录`)
       continue
     }
