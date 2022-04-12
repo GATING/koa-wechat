@@ -20,19 +20,19 @@ async function getCookie() {
   const url = `${jdUrl}open/auth/token?client_id=${jdClientID}&client_secret=${jdClientSecret}`
   const { data } = await get(url)
   const token = data.token
-  const evnResult = await get(
+  const envResult = await get(
     `${jdUrl}open/envs?searchValue=JD_COOKIE&t=${new Date().getTime()}`,
     null,
     {
       headers: { Authorization: 'Bearer ' + token }
     }
   )
-  return evnResult
+  return envResult
 }
 
 async function getJDCookie() {
-  const evnResult = await getCookie()
-  return evnResult.data[0].value
+  const envResult = await getCookie()
+  return envResult.data[0].value
 }
 exports.replyJd = async function (content) {
   const Cookie = await getJDCookie()
@@ -377,9 +377,8 @@ exports.replyLuHan = async function (content) {
 
 const beanPath = path.resolve(__dirname, './bean.json')
 exports.replyBean = async (content, { FromUserName }) => {
-  let jdCookieList = await getCookie()
-  jdCookieList = jdCookieList.filter(({ status }) => !status)
-
+  let envResult = await getCookie()
+  let jdCookieList = envResult.data.filter(({ status }) => !status)
   let userBean = {}
   if (fs.existsSync(beanPath)) {
     userBean = require(beanPath)
@@ -417,7 +416,7 @@ exports.replyBean = async (content, { FromUserName }) => {
   const today = parseInt((Date.now() + 28800000) / 86400000) * 86400000 - 28800000
   for (let i = 0; i < pinList.length; i++) {
     const pin = pinList[i]
-    const { value: cookie, remark } = jdCookieList.find(({ value }) => {
+    const { value: cookie, remarks } = jdCookieList.find(({ value }) => {
       const ptPin = value.match(/pt_pin=(.*?);/)?.[1]
       return encodeURIComponent(ptPin) === encodeURIComponent(pin)
     })
@@ -540,7 +539,7 @@ exports.replyBean = async (content, { FromUserName }) => {
     console.log(jxResp)
     xibeanCount = jxResp?.data?.xibean ?? 0
 
-    let message = `${remark.replace(/remark\=(.*)?;/, '$1')}
+    let message = `${remarks.replace(/remark\=(.*)?;/, '$1')}
     【今日京豆】收${todayIncomeBean}豆,支${todayOutcomeBean}豆
     【昨日京豆】收${incomeBean}豆,支${expenseBean}豆
     【当前京豆】${beanCount}豆(≈${(beanCount / 100).toFixed(2)}元)
@@ -550,6 +549,5 @@ exports.replyBean = async (content, { FromUserName }) => {
     `.replace(/(\n)(\s+)/g, '$1')
     messageList.push(message)
   }
-
   return messageList.join('\n')
 }
