@@ -378,7 +378,7 @@ exports.replyLuHan = async function (content) {
 const beanPath = path.resolve(__dirname, './bean.json')
 exports.replyBean = async (content, { FromUserName }) => {
   let envResult = await getCookie()
-  let jdCookieList = envResult.data.filter(({ status }) => !status)
+  let jdCookieList = envResult.data
   let userBean = {}
   if (fs.existsSync(beanPath)) {
     userBean = require(beanPath)
@@ -416,10 +416,19 @@ exports.replyBean = async (content, { FromUserName }) => {
   const today = parseInt((Date.now() + 28800000) / 86400000) * 86400000 - 28800000
   for (let i = 0; i < pinList.length; i++) {
     const pin = pinList[i]
-    const { value: cookie, remarks } = jdCookieList.find(({ value }) => {
+    const user = jdCookieList.find(({ value }) => {
       const ptPin = value.match(/pt_pin=(.*?);/)?.[1]
       return encodeURIComponent(ptPin) === encodeURIComponent(pin)
     })
+    if (!user) {
+      break
+    }
+    const { value: cookie, remarks, status } = user
+    const remark = remarks?.replace(/remark\=(.*)?;/, '$1')
+    if (!status) {
+      messageList.push(`${remark}已过期，请重新登录`)
+      break
+    }
     let page = 1,
       t = 0,
       yesterdayArr = [],
@@ -462,6 +471,7 @@ exports.replyBean = async (content, { FromUserName }) => {
         }
       } else if (response && response.code === '3') {
         console.log(`cookie已过期，或者填写不规范，跳出`)
+        messageList.push(`${remark}已过期，请重新登录`)
         t = 1
       } else {
         console.log(`未知情况：${JSON.stringify(response)}`)
@@ -539,7 +549,7 @@ exports.replyBean = async (content, { FromUserName }) => {
     console.log(jxResp)
     xibeanCount = jxResp?.data?.xibean ?? 0
 
-    let message = `${remarks.replace(/remark\=(.*)?;/, '$1')}
+    let message = `${remark}
     【今日京豆】收${todayIncomeBean}豆,支${todayOutcomeBean}豆
     【昨日京豆】收${incomeBean}豆,支${expenseBean}豆
     【当前京豆】${beanCount}豆(≈${(beanCount / 100).toFixed(2)}元)
@@ -548,6 +558,9 @@ exports.replyBean = async (content, { FromUserName }) => {
     【当前喜豆】${xibeanCount}喜豆(≈${(xibeanCount / 100).toFixed(2)}元)
     `.replace(/(\n)(\s+)/g, '$1')
     messageList.push(message)
+  }
+  if (!messageList.length) {
+    return `暂无用户或者用户已过期，有疑问请联系管理员哦~`
   }
   return messageList.join('\n')
 }
