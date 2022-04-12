@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.26.1",
+    "axios-cookiejar-support": "^2.0.4",
     "concat-stream": "^2.0.0",
     "dotenv": "^16.0.0",
     "ejs": "^3.1.6",
@@ -23,6 +24,7 @@
     "koa-static": "^5.0.0",
     "koa2-cors": "^2.0.6",
     "log4js": "^6.4.4",
+    "tough-cookie": "^4.0.0",
     "uuid": "^8.3.2",
     "xml2js": "^0.4.23"
   },

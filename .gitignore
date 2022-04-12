@@ -205,3 +205,4 @@ dist-ssr
 # koa-wechat
 token.json
 city.json
+bean.json

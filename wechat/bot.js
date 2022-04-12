@@ -7,6 +7,13 @@ const glob = require('glob')
 const { get, post } = require('../utils/request')
 const { parseXML } = require('../wechat-lib/util')
 const USER_AGENT = require('./userAgent')
+const {
+  getTotalBean,
+  getTotalBean2,
+  getJingBeanBalanceDetail,
+  getJxBeanInfo,
+  getJxBeanDetailData
+} = require('./jd')
 const { jdUrl, jdClientID, jdClientSecret } = process.env
 
 async function getCookie() {
@@ -20,11 +27,15 @@ async function getCookie() {
       headers: { Authorization: 'Bearer ' + token }
     }
   )
+  return evnResult
+}
 
+async function getJDCookie() {
+  const evnResult = await getCookie()
   return evnResult.data[0].value
 }
 exports.replyJd = async function (content) {
-  const Cookie = await getCookie()
+  const Cookie = await getJDCookie()
   //判断链接是否来自于京东
   let linkInfo = await get(
     'https://api.m.jd.com/api',
@@ -362,4 +373,183 @@ exports.replyLuHan = async function (content) {
     return `当前没有图片哦，请联系管理员上传`
   }
   return `因微信认证的问题，此功能暂时无法使用，请点击 <a href='${url}${filePath}'>${content}</a> 进行查看哦。`
+}
+
+const beanPath = path.resolve(__dirname, './bean.json')
+exports.replyBean = async (content, { FromUserName }) => {
+  let jdCookieList = await getCookie()
+  jdCookieList = jdCookieList.filter(({ status }) => !status)
+
+  let userBean = {}
+  if (fs.existsSync(beanPath)) {
+    userBean = require(beanPath)
+  }
+  const ptKey = content.match(/pt_key=(.*?);/)?.[1]
+  const ptPin = content.match(/pt_pin=(.*?);/)?.[1]
+  if (!userBean[FromUserName]?.pin?.length) {
+    if (ptKey && ptPin) {
+      await this.replyLogin(ptKey, ptPin)
+      userBean[FromUserName] = {
+        remark: '',
+        pin: [ptPin]
+      }
+    } else {
+      return `暂无用户哦，请联系管理员添加`
+    }
+  } else {
+    if (ptKey && ptPin) {
+      const pin = userBean[FromUserName].pin
+      if (!pin.includes(encodeURIComponent(ptPin))) {
+        pin.push(ptPin)
+      }
+    }
+  }
+  if (ptKey && ptPin) {
+    fs.writeFileSync(beanPath, JSON.stringify(userCity))
+  }
+
+  const pinList = userBean[FromUserName].pin
+  const messageList = []
+  // 前一天的0:0:0时间戳
+  const yesterday =
+    parseInt((Date.now() + 28800000) / 86400000) * 86400000 - 28800000 - 24 * 60 * 60 * 1000
+  // 今天0:0:0时间戳
+  const today = parseInt((Date.now() + 28800000) / 86400000) * 86400000 - 28800000
+  for (let i = 0; i < pinList.length; i++) {
+    const pin = pinList[i]
+    const { value: cookie, remark } = jdCookieList.find(({ value }) => {
+      const ptPin = value.match(/pt_pin=(.*?);/)?.[1]
+      return encodeURIComponent(ptPin) === encodeURIComponent(pin)
+    })
+    let page = 1,
+      t = 0,
+      yesterdayArr = [],
+      todayArr = [],
+      incomeBean = 0,
+      expenseBean = 0,
+      todayIncomeBean = 0,
+      todayOutcomeBean = 0,
+      inJxBean = 0,
+      OutJxBean = 0,
+      todayinJxBean = 0,
+      todayOutJxBean = 0,
+      beanCount = 0,
+      xibeanCount = 0
+
+    while (t === 0) {
+      let response = await getJingBeanBalanceDetail(page, cookie)
+      if (response && response.code === '0') {
+        page++
+        let detailList = response.detailList
+        if (detailList && detailList.length > 0) {
+          for (let item of detailList) {
+            const date = new Date(item.date.replace(/-/g, '/') + '+08:00').getTime()
+            const isNotBack =
+              !item['eventMassage'].includes('退还') && !item['eventMassage'].includes('扣赠')
+            if (date >= today && isNotBack) {
+              todayArr.push(item)
+            } else if (yesterday <= date && date < today && isNotBack) {
+              //昨日的
+              yesterdayArr.push(item)
+            } else if (yesterday > date) {
+              //前天的
+              t = 1
+              break
+            }
+          }
+        } else {
+          $.errorMsg = `数据异常`
+          t = 1
+        }
+      } else if (response && response.code === '3') {
+        console.log(`cookie已过期，或者填写不规范，跳出`)
+        t = 1
+      } else {
+        console.log(`未知情况：${JSON.stringify(response)}`)
+        console.log(`未知情况，跳出`)
+        t = 1
+      }
+    }
+
+    for (let item of yesterdayArr) {
+      if (Number(item.amount) > 0) {
+        incomeBean += Number(item.amount)
+      } else if (Number(item.amount) < 0) {
+        expenseBean += Number(item.amount)
+      }
+    }
+    for (let item of todayArr) {
+      if (Number(item.amount) > 0) {
+        todayIncomeBean += Number(item.amount)
+      } else if (Number(item.amount) < 0) {
+        todayOutcomeBean += Number(item.amount)
+      }
+    }
+
+    const totalResp = await getTotalBean(cookie)
+    beanCount = totalResp.data?.assetInfo?.beanNum
+    if (!beanCount) {
+      const user = await getTotalBean2(cookie)
+      beanCount = user?.jingBean ?? 0
+    }
+
+    // 京喜
+    let JxYesterdayArr = [],
+      JxTodayArr = []
+    let JxResponse = await getJxBeanDetailData(cookie)
+    JxResponse = JSON.parse(JxResponse.match(new RegExp(/jsonpCBK.?\((.*);*/))[1])
+    if (JxResponse && JxResponse.ret == '0') {
+      let Jxdetail = JxResponse.detail
+      if (Jxdetail && Jxdetail.length > 0) {
+        for (let item of Jxdetail) {
+          const date = new Date(item.createdate.replace(/-/g, '/') + '+08:00').getTime()
+          const isNotBack =
+            !item['visibleinfo'].includes('退还') && !item['visibleinfo'].includes('扣赠')
+          if (date >= today && isNotBack) {
+            JxTodayArr.push(item)
+          } else if (yesterday <= date && date < today && isNotBack) {
+            //昨日的
+            JxYesterdayArr.push(item)
+          } else if (yesterday > date) {
+            break
+          }
+        }
+      } else {
+        console.log(`数据异常`)
+      }
+      for (let item of JxYesterdayArr) {
+        if (Number(item.amount) > 0) {
+          inJxBean += Number(item.amount)
+        } else if (Number(item.amount) < 0) {
+          OutJxBean += Number(item.amount)
+        }
+      }
+      for (let item of JxTodayArr) {
+        if (Number(item.amount) > 0) {
+          todayinJxBean += Number(item.amount)
+        } else if (Number(item.amount) < 0) {
+          todayOutJxBean += Number(item.amount)
+        }
+      }
+      todayOutJxBean = -todayOutJxBean
+      OutJxBean = -OutJxBean
+    }
+
+    let jxResp = await getJxBeanInfo(cookie)
+    jxResp = JSON.parse(jxResp.match(new RegExp(/jsonpCBK.?\((.*);*/))[1])
+    console.log(jxResp)
+    xibeanCount = jxResp?.data?.xibean ?? 0
+
+    let message = `${remark.replace(/remark\=(.*)?;/, '$1')}
+    【今日京豆】收${todayIncomeBean}豆,支${todayOutcomeBean}豆
+    【昨日京豆】收${incomeBean}豆,支${expenseBean}豆
+    【当前京豆】${beanCount}豆(≈${(beanCount / 100).toFixed(2)}元)
+    【今日喜豆】收${todayinJxBean}豆,支${todayOutJxBean}豆
+    【昨日喜豆】收${inJxBean}豆,支${OutJxBean}豆
+    【当前喜豆】${xibeanCount}喜豆(≈${(xibeanCount / 100).toFixed(2)}元)
+    `.replace(/(\n)(\s+)/g, '$1')
+    messageList.push(message)
+  }
+
+  return messageList.join('\n')
 }

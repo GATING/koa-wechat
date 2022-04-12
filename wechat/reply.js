@@ -23,7 +23,8 @@ const {
   replyLuHan,
   replyLeg,
   replyBuyerShow,
-  replyDeWatermark
+  replyDeWatermark,
+  replyBean
 } = require('./bot')
 const help = '亲爱的，欢迎关注磨蹭的小时光'
 const urlReg = /(((ht|f)tps?):\/\/)[\w-]+(\.[\w-]+)+([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])?/i
@@ -72,6 +73,8 @@ async function replyText(message) {
     return Math.floor(Math.random() * Math.pow(10, random))
   } else if (/^舔狗(日记)?$/.test(content)) {
     return replyFlatterer()
+  } else if (/^(资产|羊毛|jd|豆子|京豆|喜豆)/.test(content)) {
+    return replyBean()
   } else if (/^渣男(语录)?$/.test(content)) {
     return replyScumbag()
   } else if (/^历史上的今天?$/.test(content)) {
