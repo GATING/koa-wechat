@@ -421,13 +421,13 @@ exports.replyBean = async (content, { FromUserName }) => {
       return encodeURIComponent(ptPin) === encodeURIComponent(pin)
     })
     if (!user) {
-      break
+      continue
     }
     const { value: cookie, remarks, status } = user
     const remark = remarks?.replace(/remark\=(.*)?;/, '$1')
     if (!status) {
       messageList.push(`${remark}已过期，请重新登录`)
-      break
+      continue
     }
     let page = 1,
       t = 0,
