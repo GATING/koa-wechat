@@ -60,7 +60,7 @@ exports.replyJd = async function (content, urlList) {
     }
   )
   if (urlList.length > 1) {
-    return linkInfo.originalContext
+    return linkInfo.data.originalContext
   }
   if (!linkInfo.data) {
     return `当前商品不支持转链哦，请您直接购买即可(#^.^#)`
