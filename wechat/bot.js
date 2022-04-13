@@ -543,8 +543,8 @@ exports.replyBean = async (content, { FromUserName }) => {
           todayOutJxBean += Number(item.amount)
         }
       }
-      todayOutJxBean = -todayOutJxBean
-      OutJxBean = -OutJxBean
+      todayOutJxBean = Math.abs(todayOutJxBean)
+      OutJxBean = Math.abs(OutJxBean)
     }
 
     let jxResp = await getJxBeanInfo(cookie)
