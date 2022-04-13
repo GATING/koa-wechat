@@ -27,7 +27,7 @@ const {
   replyBean
 } = require('./bot')
 const help = '亲爱的，欢迎关注磨蹭的小时光'
-const urlReg = /(((ht|f)tps?):\/\/)[\w-]+(\.[\w-]+)+([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])?/i
+const urlReg = /(((ht|f)tps?):\/\/)[\w-]+(\.[\w-]+)+([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])?/gi
 
 async function replyText(message) {
   let content = message.Content
@@ -88,10 +88,14 @@ async function replyText(message) {
   } else if (/(.{0,8})天气$/.test(content)) {
     return replyWeather(content, message)
   } else if (urlReg.test(content)) {
-    const url = content.match(urlReg)[0]
+    const urlList = content.match(urlReg)
+    const url = urlList[0]
     //判断链接是否来自于京东
     if (url.includes('jd') || url.includes('jingxi')) {
-      return await replyJd(url)
+      return await replyJd(
+        content,
+        urlList.filter(url => url.includes('jd') || url.includes('jingxi'))
+      )
     } else if (
       [
         'douyin',

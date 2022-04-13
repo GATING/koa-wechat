@@ -34,7 +34,7 @@ async function getJDCookie() {
   const envResult = await getCookie()
   return envResult.data[0].value
 }
-exports.replyJd = async function (content) {
+exports.replyJd = async function (content, urlList) {
   const Cookie = await getJDCookie()
   //判断链接是否来自于京东
   let linkInfo = await get(
@@ -59,6 +59,9 @@ exports.replyJd = async function (content) {
       }
     }
   )
+  if (urlList.length > 1) {
+    return linkInfo.originalContext
+  }
   if (!linkInfo.data) {
     return `当前商品不支持转链哦，请您直接购买即可(#^.^#)`
   }
