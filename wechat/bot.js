@@ -543,21 +543,18 @@ exports.replyBean = async (content, { FromUserName }) => {
           todayOutJxBean += Number(item.amount)
         }
       }
-      todayOutJxBean = Math.abs(todayOutJxBean)
-      OutJxBean = Math.abs(OutJxBean)
     }
 
     let jxResp = await getJxBeanInfo(cookie)
     jxResp = JSON.parse(jxResp.match(new RegExp(/jsonpCBK.?\((.*);*/))[1])
-    console.log(jxResp)
     xibeanCount = jxResp?.data?.xibean ?? 0
 
     let message = `${remark}
-    【今日京豆】收${todayIncomeBean}豆,支${todayOutcomeBean}豆
-    【昨日京豆】收${incomeBean}豆,支${expenseBean}豆
+    【今日京豆】收${todayIncomeBean}豆,支${Math.abs(todayOutcomeBean)}豆
+    【昨日京豆】收${incomeBean}豆,支${Math.abs(expenseBean)}豆
     【当前京豆】${beanCount}豆(≈${(beanCount / 100).toFixed(2)}元)
-    【今日喜豆】收${todayinJxBean}豆,支${todayOutJxBean}豆
-    【昨日喜豆】收${inJxBean}豆,支${OutJxBean}豆
+    【今日喜豆】收${todayinJxBean}豆,支${Math.abs(todayOutJxBean)}豆
+    【昨日喜豆】收${inJxBean}豆,支${Math.abs(OutJxBean)}豆
     【当前喜豆】${xibeanCount}喜豆(≈${(xibeanCount / 100).toFixed(2)}元)
     `.replace(/(\n)(\s+)/g, '$1')
     messageList.push(message)
