@@ -143,7 +143,7 @@ exports.vipHelp = function () {
   )
 }
 exports.replyVip = function (content) {
-  const index = ~~content.match(/vip\s+(\d+)/)?.[1]
+  const index = ~~content.match(/vip\s*(\d+)/)?.[1]
   const { name, url } = parseInterfaces[index ? index - 1 : 0]
   return `目前播放源是:${name},请复制到浏览器播放\n播放链接: ${url}=${content}\n如不能播放请输出 /vip 输出帮助文档哦`
 }
