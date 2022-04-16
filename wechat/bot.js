@@ -296,7 +296,7 @@ exports.replyCOVID = async function (content, { FromUserName }) {
   if (resp.code != 200) {
     return resp.msg
   }
-  if (match[1]) {
+  if (match?.[1]) {
     userCity[FromUserName] = city
     fs.writeFileSync(cityPath, JSON.stringify(userCity))
   }
@@ -362,7 +362,7 @@ exports.replyWeather = async function (content, { FromUserName }) {
   const data = await get('http://wthrcdn.etouch.cn/WeatherApi', {
     city
   })
-  if (match[1]) {
+  if (match?.[1]) {
     userCity[FromUserName] = city
     fs.writeFileSync(cityPath, JSON.stringify(userCity))
   }
