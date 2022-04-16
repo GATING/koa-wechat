@@ -15,6 +15,7 @@ const {
   getJxBeanDetailData
 } = require('./jd')
 const { jdUrl, jdClientID, jdClientSecret } = process.env
+const cityPath = path.resolve(__dirname, './city.json')
 
 async function getCookie() {
   const url = `${jdUrl}open/auth/token?client_id=${jdClientID}&client_secret=${jdClientSecret}`
@@ -282,7 +283,7 @@ exports.replyRainbow = async function () {
   return text
 }
 
-exports.replyCOVID = async function (content) {
+exports.replyCOVID = async function (content, { FromUserName }) {
   let userCity = {}
   if (fs.existsSync(cityPath)) {
     userCity = require(cityPath)
@@ -351,7 +352,6 @@ exports.weatherHelp = function () {
   )
 }
 
-const cityPath = path.resolve(__dirname, './city.json')
 exports.replyWeather = async function (content, { FromUserName }) {
   let userCity = {}
   if (fs.existsSync(cityPath)) {

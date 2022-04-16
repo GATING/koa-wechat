@@ -82,7 +82,7 @@ async function replyText(message) {
   } else if (/^毒?鸡汤$/.test(content)) {
     return replyChickenSoup()
   } else if (/^(.{0,5})疫情(.{0,5})$/.test(content)) {
-    return replyCOVID(content)
+    return replyCOVID(content, message)
   } else if (/^每?日?一言$/.test(content)) {
     return replyLoveTalk()
   } else if (/(.{0,8})天气$/.test(content)) {
