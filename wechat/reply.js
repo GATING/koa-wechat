@@ -38,7 +38,7 @@ async function replyText(message) {
   }
 
   if (/^\/?help|帮助$/i.test(content)) {
-    return replyHelp(content)
+    return replyHelp(message)
   } else if (/^\/?vip$/i.test(content)) {
     return vipHelp(content)
   } else if (/^\/?random$/i.test(content)) {

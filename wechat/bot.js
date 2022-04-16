@@ -83,7 +83,12 @@ exports.replyJd = async function (content, urlList) {
   ]
 }
 
-exports.replyHelp = function () {
+exports.replyHelp = function ({ FromUserName }) {
+  let userCity = {}
+  if (fs.existsSync(cityPath)) {
+    userCity = require(cityPath)
+  }
+  const city = userCity?.[FromUserName] || '广州'
   return (
     '目前支持的功能有：\n' +
     '\n直接输入京东的商品链接，可以直接转链\n' +
@@ -98,9 +103,10 @@ exports.replyHelp = function () {
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=每日一言&msgmenuid=3">每日一言</a> 可以输出每日一言\n' +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=美女图片&msgmenuid=3">美女图片</a> 可以输出美女图片哦\n' +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=动漫图片&msgmenuid=3">动漫图片</a> 可以输出动漫图片哦\n' +
-    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=天气&msgmenuid=3">天气</a> 可以输出指定城市的天气哦，默认值为广州\n' +
-    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=疫情&msgmenuid=3">疫情</a> 可以输出指定城市疫情哦，默认值为广州\n' +
+    `\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=天气&msgmenuid=3">天气</a> 可以输出指定城市的天气哦，默认值为${city}\n` +
+    `\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=疫情&msgmenuid=3">疫情</a> 可以输出指定城市疫情哦，默认值为${city}\n` +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=vip&msgmenuid=3">/vip</a> 可以切换源播放视频\n' +
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=COVID&msgmenuid=3">/COVID</a> 可以疫情功能的用法\n' +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=weather&msgmenuid=3">/weather</a> 可以查看天气的用法\n' +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=random&msgmenuid=3">/random</a> 可以查看随机数的用法\n' +
     '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=help&msgmenuid=4">/help</a> 可以再次回到这里哦\n'
@@ -158,10 +164,23 @@ exports.replyWb = async function () {
       .slice(0, 16)
       .map(
         (item, idx) =>
-          `<a href='https://s.weibo.com/weibo?q=${item.word}'>${idx + 1}.${item.word}</a>\n`
+          `<a href='https://s.weibo.com/weibo?q=${encodeURIComponent(item.word)}'>${idx + 1}.${
+            item.word
+          }</a>\n`
       )
   )
   return list.join('\n')
+}
+
+exports.COVIDHelp = function () {
+  return (
+    '欢迎使用查看疫情功能：\n' +
+    parseInterfaces.map((interface, index) => `${index + 1}.${interface.name}`).join('\n') +
+    '\n使用城市+疫情或者疫情+城市可以输出指定城市的疫情情况\n' +
+    '如: 广州疫情 或者 疫情广州\n' +
+    '使用默认+城市+疫情可以指定默认城市，如指定后，以后输入疫情直接输出默认城市疫情\n' +
+    '如: 默认广州疫情'
+  )
 }
 
 function concatDataStream(formData) {
@@ -264,13 +283,21 @@ exports.replyRainbow = async function () {
 }
 
 exports.replyCOVID = async function (content) {
-  const match = content.match(/(.{0,5})疫情(.{0,5})$/)
-  const city = match?.[1] || match?.[2] || '广州'
+  let userCity = {}
+  if (fs.existsSync(cityPath)) {
+    userCity = require(cityPath)
+  }
+  const match = content.match(/(默认)(.{0,8})疫情(.{0,8})$/)
+  const city = match?.[2] || match?.[3] || '广州'
   const resp = await get('https://api.iyk0.com/yq/', {
     msg: city
   })
   if (resp.code != 200) {
     return resp.msg
+  }
+  if (match[1]) {
+    userCity[FromUserName] = city
+    fs.writeFileSync(cityPath, JSON.stringify(userCity))
   }
   return (
     '查询地区:' +
@@ -407,7 +434,7 @@ exports.replyBean = async (content, { FromUserName }) => {
     }
   }
   if (ptKey && ptPin) {
-    fs.writeFileSync(beanPath, JSON.stringify(userCity))
+    fs.writeFileSync(beanPath, JSON.stringify(userBean))
   }
 
   const pinList = userBean[FromUserName].pin
