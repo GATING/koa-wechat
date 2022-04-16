@@ -90,28 +90,28 @@ exports.replyHelp = function ({ FromUserName }) {
     userCity = require(cityPath)
   }
   const city = userCity?.[FromUserName] || '广州'
-  return (
-    '目前支持的功能有：\n' +
-    '\n直接输入京东的商品链接，可以直接转链\n' +
-    '\n直接输入视频链接可以跳转到解析链接播放会员视频\n' +
-    '\n直接输入抖音、B站等短视频链接，可以直接转链去水印\n' +
-    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=摸鱼&msgmenuid=1">摸鱼</a> 欢迎你进入摸鱼的一套哦\n' +
-    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=微博热搜&msgmenuid=1">微博热搜</a> 查看实时微博热搜\n' +
-    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=随机人脸&msgmenuid=1">随机人脸</a> 可以生成一份随机的人脸\n' +
-    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=随机数&msgmenuid=1">随机数</a> 可以生成一份随机数，默认4位\n' +
-    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=毒鸡汤&msgmenuid=1">毒鸡汤</a> 可以查看鸡汤\n' +
-    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=舔狗日记&msgmenuid=2">舔狗日记</a> 可以输出舔狗日记\n' +
-    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=每日一言&msgmenuid=3">每日一言</a> 可以输出每日一言\n' +
-    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=美女图片&msgmenuid=3">美女图片</a> 可以输出美女图片哦\n' +
-    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=动漫图片&msgmenuid=3">动漫图片</a> 可以输出动漫图片哦\n' +
-    `\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=天气&msgmenuid=3">天气</a> 可以输出指定城市的天气哦，默认值为${city}\n` +
-    `\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=疫情&msgmenuid=3">疫情</a> 可以输出指定城市疫情哦，默认值为${city}\n` +
-    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=vip&msgmenuid=3">/vip</a> 可以切换源播放视频\n' +
-    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=COVID&msgmenuid=3">/COVID</a> 可以疫情功能的用法\n' +
-    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=weather&msgmenuid=3">/weather</a> 可以查看天气的用法\n' +
-    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=random&msgmenuid=3">/random</a> 可以查看随机数的用法\n' +
-    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=help&msgmenuid=4">/help</a> 可以再次回到这里哦\n'
-  )
+  const messageList = [
+    '目前支持的功能有：',
+    '\n直接输入京东的商品链接，可以直接转链',
+    '\n直接输入视频链接可以跳转到解析链接播放会员视频',
+    '\n直接输入抖音、B站等短视频链接，可以直接转链去水印',
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=摸鱼&msgmenuid=1">摸鱼</a> 欢迎你进入摸鱼的一套哦',
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=微博热搜&msgmenuid=1">微博热搜</a> 查看实时微博热搜',
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=随机人脸&msgmenuid=1">随机人脸</a> 可以生成一份随机的人脸',
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=毒鸡汤&msgmenuid=1">毒鸡汤</a> 可以查看鸡汤',
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=舔狗日记&msgmenuid=2">舔狗日记</a> 可以输出舔狗日记',
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=每日一言&msgmenuid=3">每日一言</a> 可以输出每日一言',
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=美女图片&msgmenuid=3">美女图片</a> 可以输出美女图片哦',
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=动漫图片&msgmenuid=3">动漫图片</a> 可以输出动漫图片哦',
+    `\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=天气&msgmenuid=3">天气</a> 可以输出指定城市的天气哦，默认值为${city}`,
+    `\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=疫情&msgmenuid=3">疫情</a> 可以输出指定城市疫情哦，默认值为${city}`,
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=vip&msgmenuid=3">/vip</a> 可以切换源播放视频',
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=COVID&msgmenuid=3">/COVID</a> 可以疫情功能的用法',
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=weather&msgmenuid=3">/weather</a> 可以查看天气的用法',
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=random&msgmenuid=3">/random</a> 可以查看随机数的用法',
+    '\n输入 <a href="weixin://bizmsgmenu?msgmenucontent=help&msgmenuid=4">/help</a> 可以再次回到这里哦'
+  ]
+  return messageList.join('\n')
 }
 
 // 解析路线
