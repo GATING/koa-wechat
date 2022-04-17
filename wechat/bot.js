@@ -165,9 +165,7 @@ exports.replyWb = async function () {
       .slice(0, 16)
       .map(
         (item, idx) =>
-          `<a href='https://s.weibo.com/weibo?q=${encodeURIComponent(item.word)}'>${idx + 1}.${
-            item.word
-          }</a>\n`
+          `<a href='https://s.weibo.com/weibo?q=${item.word}'>${idx + 1}.${item.word}</a>\n`
       )
   )
   return list.join('\n')
