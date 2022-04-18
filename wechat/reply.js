@@ -25,7 +25,8 @@ const {
   replyBuyerShow,
   replyDeWatermark,
   replyBean,
-  COVIDHelp
+  COVIDHelp,
+  replyRaiseCard
 } = require('./bot')
 const help = '亲爱的，欢迎关注磨蹭的小时光'
 const urlReg = /(((ht|f)tps?):\/\/)[\w-]+(\.[\w-]+)+([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])?/gi
@@ -48,6 +49,8 @@ async function replyText(message) {
     return randomHelp(content)
   } else if (/^\/?weather$/i.test(content)) {
     return weatherHelp()
+  } else if (/^举牌\s/i.test(content)) {
+    return replyRaiseCard(content)
   } else if (/^鹿晗|lu\s?han$/i.test(content)) {
     return replyLuHan(content)
   } else if (/^微博热?搜?$/.test(content)) {

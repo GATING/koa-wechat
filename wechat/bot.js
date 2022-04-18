@@ -288,7 +288,9 @@ exports.replyRaiseCard = async function () {
   if (!text) {
     return `请输入文字`
   }
-  return `因微信认证的问题，此功能暂时无法使用，请点击 <a href='http://lkaa.top/API/pai/?msg=${encodeURI(text}'>举牌</a> 进行查看。`
+  return `因微信认证的问题，此功能暂时无法使用，请点击 <a href='http://lkaa.top/API/pai/?msg=${encodeURI(
+    text
+  )}'>举牌</a> 进行查看。`
 }
 
 exports.replyCOVID = async function (content, { FromUserName }) {
