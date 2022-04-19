@@ -298,7 +298,7 @@ exports.replyCOVID = async function (content, { FromUserName }) {
   if (fs.existsSync(cityPath)) {
     userCity = require(cityPath)
   }
-  const match = content.match(/(默认)(.{0,8})疫情(.{0,8})$/)
+  const match = content.match(/(默认)?(.{0,8})疫情(.{0,8})$/)
   const city = match?.[2] || match?.[3] || userCity[FromUserName] || '广州'
   const resp = await get('https://api.iyk0.com/yq/', {
     msg: city
