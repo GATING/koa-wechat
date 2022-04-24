@@ -233,17 +233,20 @@ exports.replyBuyerShow = async function () {
 }
 
 exports.replyDeWatermark = async function (content) {
-  const { title, cover, url } = await get('https://api.iyk0.com/qsy/', {
+  const { title, cover, url, msg } = await get('https://api.iyk0.com/qsy/', {
     url: content
   })
-  return [
-    {
-      title: '去水印视频',
-      description: title,
-      picUrl: cover,
-      url
-    }
-  ]
+  if (url) {
+    return [
+      {
+        title: '去水印视频',
+        description: title,
+        picUrl: cover,
+        url
+      }
+    ]
+  }
+  return msg
 }
 
 exports.replyLazy = async function () {
