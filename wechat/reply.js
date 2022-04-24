@@ -73,7 +73,7 @@ async function replyText(message) {
     return replyRandomFace(content)
   } else if (/^随机数?字?(\d+)?$/.test(content)) {
     const random = ~~content.match(/\d+/)?.[0] || 4
-    if (random <= 1 || random > 16) {
+    if (random < 1 || random > 16) {
       return '请输入正确的数字哦，最大16位'
     }
     return Math.floor(Math.random() * Math.pow(10, random))
