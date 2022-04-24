@@ -272,13 +272,13 @@ exports.replyScumbag = async function () {
 }
 
 exports.replyHistory = async function () {
-  const text = await get('https://api.ooomn.com/api/history?format=json')
-  return text
+  const { content } = await get('https://api.ooomn.com/api/history?format=json')
+  return content.join('\n')
 }
 
 exports.replyRainbow = async function () {
-  const text = await get('https://api.iyk0.com/chp/')
-  return text
+  const { txt } = await get('https://api.iyk0.com/chp/')
+  return txt
 }
 
 exports.replyRaiseCard = async function () {
@@ -286,7 +286,7 @@ exports.replyRaiseCard = async function () {
   if (!text) {
     return `请输入文字`
   }
-  return `因微信认证的问题，此功能暂时无法使用，请点击 <a href='http://lkaa.top/API/pai/?msg=${encodeURI(
+  return `因微信认证的问题，此功能暂时无法使用，请点击 <a href='http://api.lingfeng.press/api/zt.php?msg=${encodeURI(
     text
   )}'>举牌</a> 进行查看。`
 }
