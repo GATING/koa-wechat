@@ -285,7 +285,7 @@ exports.replyRainbow = async function () {
 }
 
 exports.replyRaiseCard = async function (content) {
-  const text = content.match(/举牌\s(.)*$/)?.[1]
+  const text = content.match(/举牌\s(.*)$/)?.[1]
   if (!text) {
     return `请输入文字`
   }
