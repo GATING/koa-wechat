@@ -120,7 +120,7 @@ async function replyText(message) {
     ) {
       return replyDeWatermark(url)
     } else {
-      return replyVip(content)
+      return replyVip(url)
     }
   }
   return (

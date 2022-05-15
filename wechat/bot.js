@@ -174,7 +174,6 @@ exports.replyWb = async function () {
 exports.COVIDHelp = function () {
   return (
     '欢迎使用查看疫情功能：\n' +
-    parseInterfaces.map((interface, index) => `${index + 1}.${interface.name}`).join('\n') +
     '\n使用城市+疫情或者疫情+城市可以输出指定城市的疫情情况\n' +
     '如: 广州疫情 或者 疫情广州\n' +
     '使用默认+城市+疫情可以指定默认城市，如指定后，以后输入疫情直接输出默认城市疫情\n' +
