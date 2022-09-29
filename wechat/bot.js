@@ -149,10 +149,10 @@ exports.vipHelp = function () {
     '如: vip1 https://www.mgtv.com/b/291976/3283295.html?fpa=se&lastp=so_result'
   )
 }
-exports.replyVip = function (content) {
+exports.replyVip = function (content, vipUrl) {
   const index = ~~content.match(/vip\s*(\d+)/)?.[1]
   const { name, url } = parseInterfaces[index ? index - 1 : 0]
-  return `目前播放源是:${name},请复制到浏览器播放\n播放链接: ${url}=${content}\n如不能播放请输出 /vip 输出帮助文档哦`
+  return `目前播放源是:${name},请复制到浏览器播放\n播放链接: ${url}=${vipUrl}\n如不能播放请输出 /vip 输出帮助文档哦`
 }
 
 // 微博热搜，长度不能过多，不然会报错
