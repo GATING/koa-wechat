@@ -36,6 +36,9 @@ async function replyText(message) {
   const ptKey = content.match(/pt_key=(.*?);/)?.[1]
   const ptPin = content.match(/pt_pin=(.*?);/)?.[1]
   if (ptKey && ptPin) {
+    if (/^(资产|羊毛|jd|豆子|京豆|喜豆)/.test(content)) {
+      return replyBean(content, message)
+    } 
     return replyLogin(ptKey, ptPin)
   }
 
