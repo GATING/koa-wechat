@@ -432,6 +432,8 @@ exports.replyBean = async (content, { FromUserName }) => {
         remark: '',
         pin: [ptPin]
       }
+    } else {
+      return `暂无用户哦，请联系管理员添加`
     }
   } else {
     if (ptKey && ptPin) {
